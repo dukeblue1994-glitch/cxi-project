@@ -5,12 +5,10 @@
 [dev]
   functions = "netlify/functions"
 
-[headers]
-  [[headers]]
+[[headers]]
   for = "/*"
   [headers.values]
   Access-Control-Allow-Origin = "*"
-
 [[redirects]]
 from = "/api/feedback"
 to = "/.netlify/functions/saveFeedback"

@@ -1,0 +1,66 @@
+{
+  "name": "cxi_cxis_today_polished_v23",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "abab": "^2.0.6",
+    "accepts": "^1.3.8",
+    "acorn": "^8.15.0",
+    "acorn-globals": "^6.0.0",
+    "acorn-walk": "^7.2.0",
+    "agent-base": "^6.0.2",
+    "ansi-escapes": "^4.3.2",
+    "ansi-regex": "^5.0.1",
+    "ansi-styles": "^4.3.0",
+    "anymatch": "^3.1.3",
+    "argparse": "^1.0.10",
+    "arr-diff": "^4.0.0",
+    "arr-flatten": "^1.1.0",
+    "arr-union": "^3.1.0",
+    "array-flatten": "^1.1.1",
+    "array-unique": "^0.3.2",
+    "assign-symbols": "^1.0.0",
+    "asynckit": "^0.4.0",
+    "atob": "^2.1.2",
+    "babel-jest": "^26.6.3",
+    "babel-plugin-istanbul": "^6.1.1",
+    "babel-plugin-jest-hoist": "^26.6.2",
+    "babel-preset-current-node-syntax": "^1.2.0",
+    "babel-preset-jest": "^26.6.2",
+    "balanced-match": "^1.0.2",
+    "base": "^0.11.2",
+    "base64id": "^2.0.0",
+    "baseline-browser-mapping": "^2.8.6",
+    "body-parser": "^1.20.3",
+    "brace-expansion": "^1.1.12",
+    "braces": "^3.0.3",
+    "browser-process-hrtime": "^1.0.0",
+    "browserslist": "^4.26.2",
+    "bser": "^2.1.1",
+    "buffer-from": "^1.1.2",
+    "bytes": "^3.1.2",
+    "cache-base": "^1.0.1",
+    "call-bind-apply-helpers": "^1.0.2",
+    "call-bound": "^1.0.4",
+    "callsites": "^3.1.0",
+    "camelcase": "^5.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.50.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dukeblue1994-glitch/cxi-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dukeblue1994-glitch/cxi-project/issues"
+  },
+  "homepage": "https://github.com/dukeblue1994-glitch/cxi-project#readme"
+}

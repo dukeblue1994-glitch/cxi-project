@@ -7,7 +7,39 @@
 //   BRANCH       - branch to commit to (default: main)
 //   FEEDBACK_PATH- path to feedback file in repo (default: data/feedbacks.json)
 
-const fetch = require('node-fetch');
+// Prefer global fetch (Node 18+); otherwise provide a tiny https fallback
+let doFetch;
+try {
+  if (typeof fetch === 'function') {
+    doFetch = (url, opts) => fetch(url, opts);
+  }
+} catch (e) {
+  // ignore
+}
+if (!doFetch) {
+  const https = require('https');
+  const { URL } = require('url');
+  doFetch = (urlStr, opts = {}) => new Promise((resolve, reject) => {
+    const url = new URL(urlStr);
+    const reqOpts = { method: opts.method || 'GET', headers: opts.headers || {} };
+    const req = https.request(url, reqOpts, (res) => {
+      let data = '';
+      res.setEncoding('utf8');
+      res.on('data', (chunk) => data += chunk);
+      res.on('end', () => {
+        resolve({
+          ok: res.statusCode >= 200 && res.statusCode < 300,
+          status: res.statusCode,
+          json: async () => JSON.parse(data || '{}'),
+          text: async () => data
+        });
+      });
+    });
+    req.on('error', reject);
+    if (opts.body) req.write(opts.body);
+    req.end();
+  });
+}
 
 exports.handler = async function(event, context) {
   const headers = {
