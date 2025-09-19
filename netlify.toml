@@ -1,0 +1,18 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[dev]
+  functions = "netlify/functions"
+
+[headers]
+  [[headers]]
+  for = "/*"
+  [headers.values]
+  Access-Control-Allow-Origin = "*"
+
+[[redirects]]
+from = "/api/feedback"
+to = "/.netlify/functions/saveFeedback"
+status = 200
+force = true
