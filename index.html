@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CXI Project - Customer Experience Feedback</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --good: #16a34a;
+            --bad: #ef4444;
+            --warning: #f59e0b;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Inter, system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 8px 0;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .rating-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .rating-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .rating-value {
+            font-weight: 600;
+            color: var(--primary);
+            min-width: 20px;
+        }
+
+        .aspects {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .chip {
+            background: var(--border);
+            color: var(--text);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .chip.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            margin-top: 24px;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .submit-btn:disabled {
+            background: var(--secondary);
+            cursor: not-allowed;
+        }
+
+        .kpi-section {
+            background: var(--background);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 24px;
+            display: none;
+        }
+
+        .kpi-section.visible {
+            display: block;
+        }
+
+        .kpi-row {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+
+        .kpi-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .kpi-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .kpi-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .explain {
+            margin-top: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .mt-8 {
+            margin-top: 8px;
+        }
+
+        .invite-section {
+            margin-top: 32px;
+            padding: 20px;
+            background: var(--background);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .invite-section.visible {
+            display: block;
+        }
+
+        .copy-btn {
+            background: var(--warning);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+
+        .sim-section {
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 8px;
+        }
+
+        .export-btn {
+            background: var(--good);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .form-row .form-group {
+                margin-bottom: 24px;
+            }
+
+            .kpi-row {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .rating-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CXI Feedback Collection</h1>
+        <p class="subtitle">Help us improve by sharing your experience across key interaction aspects</p>
+        
+        <form id="feedback-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="overall">Overall Satisfaction</label>
+                    <div class="rating-container">
+                        <input type="range" id="overall" min="1" max="5" value="3">
+                        <span class="rating-value" id="overall-value">3</span>
+                    </div>
+                    <div class="rating-labels">
+                        <span>Very Poor</span>
+                        <span>Poor</span>
+                        <span>Average</span>
+                        <span>Good</span>
+                        <span>Excellent</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fairness">Fairness</label>
+                    <div class="rating-container">
+                        <input type="range" id="fairness" min="1" max="5" value="3">
+                        <span class="rating-value" id="fairness-value">3</span>
+                    </div>
+                    <div class="rating-labels">
+                        <span>Very Unfair</span>
+                        <span>Unfair</span>
+                        <span>Neutral</span>
+                        <span>Fair</span>
+                        <span>Very Fair</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="well">What went well? (minimum 15 words)</label>
+                <textarea id="well" placeholder="Describe what aspects of the experience were positive and worked well for you..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="better">What could be better? (minimum 15 words)</label>
+                <textarea id="better" placeholder="Share suggestions on how the experience could be improved..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="headline">Headline (optional)</label>
+                <input type="text" id="headline" placeholder="Brief summary of your experience">
+            </div>
+
+            <div class="form-group">
+                <label>Select relevant aspects:</label>
+                <div id="aspects" class="aspects">
+                    <!-- Aspect chips will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="stage">Stage</label>
+                    <select id="stage">
+                        <option value="">Select stage</option>
+                        <option value="planning">Planning</option>
+                        <option value="implementation">Implementation</option>
+                        <option value="review">Review</option>
+                        <option value="completion">Completion</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select id="role">
+                        <option value="">Select role</option>
+                        <option value="customer">Customer</option>
+                        <option value="user">User</option>
+                        <option value="stakeholder">Stakeholder</option>
+                        <option value="partner">Partner</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="conflict">Conflict Details (optional)</label>
+                    <input type="text" id="conflict" placeholder="Any conflicts or issues encountered">
+                </div>
+                
+                <div class="form-group">
+                    <label for="resched">Rescheduling Details (optional)</label>
+                    <input type="text" id="resched" placeholder="Any rescheduling requirements">
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="consent">
+                <label for="consent">I consent to my feedback being used for improvement purposes</label>
+            </div>
+
+            <button type="button" class="submit-btn" onclick="score()">Submit Feedback</button>
+        </form>
+
+        <div id="kpi-section" class="kpi-section">
+            <h3>Feedback Analysis</h3>
+            <div class="kpi-row">
+                <div class="kpi-item">
+                    <div class="kpi-label">Net Satisfaction Score</div>
+                    <div class="kpi-value" id="kpi-nss">—</div>
+                </div>
+                <div class="kpi-item">
+                    <div class="kpi-label">Experience Index</div>
+                    <div class="kpi-value" id="kpi-index">—</div>
+                </div>
+            </div>
+            <div id="explain" class="explain">
+                <!-- Explanation will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div id="invite" class="invite-section">
+            <h3>Share Feedback Collection</h3>
+            <p>Invite others to provide feedback using this link:</p>
+            <div style="display: flex; align-items: center; margin-top: 12px;">
+                <input type="text" id="copy-live" readonly style="flex: 1;">
+                <button type="button" class="copy-btn" id="btn-leave" onclick="openInvite()">Generate Link</button>
+            </div>
+            
+            <div class="sim-section">
+                <div>Simulation Rate: <span id="sim-rate">—</span></div>
+                <button type="button" class="copy-btn" onclick="updateSim()">Update Simulation</button>
+            </div>
+        </div>
+
+        <div style="margin-top: 32px;">
+            <button type="button" class="export-btn" onclick="exportFeedbacksCSV()">Export Feedback Data (CSV)</button>
+        </div>
+    </div>
+
+    <!-- Load application modules -->
+    <script src="src/app.js"></script>
+    
+    <!-- Additional functionality for UI interactions -->
+    <script>
+        // Rating slider updates
+        document.getElementById('overall').addEventListener('input', function() {
+            document.getElementById('overall-value').textContent = this.value;
+        });
+        
+        document.getElementById('fairness').addEventListener('input', function() {
+            document.getElementById('fairness-value').textContent = this.value;
+        });
+
+        // Show KPI section after scoring
+        function showKPISection() {
+            document.getElementById('kpi-section').classList.add('visible');
+        }
+
+        // Show invite section
+        function showInviteSection() {
+            document.getElementById('invite').classList.add('visible');
+        }
+
+        // Generate invite link
+        function openInvite() {
+            const currentUrl = window.location.href;
+            document.getElementById('copy-live').value = currentUrl;
+            showInviteSection();
+        }
+
+        // Update simulation (placeholder)
+        function updateSim() {
+            const simRate = Math.random().toFixed(3);
+            document.getElementById('sim-rate').textContent = simRate;
+        }
+
+        // Enhanced score function that shows results
+        const originalScore = window.score;
+        window.score = function() {
+            if (typeof originalScore === 'function') {
+                originalScore();
+                showKPISection();
+            } else {
+                console.warn('window.score is not defined. Showing KPI section as fallback.');
+                showKPISection();
+            }
+        };
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            showInviteSection();
+        });
+    </script>
+</body>
+</html>
