@@ -1,0 +1,6 @@
+# Netlify redirects file - backup to netlify.toml configuration
+# API endpoint redirect
+/api/feedback  /.netlify/functions/saveFeedback  200
+
+# SPA fallback for client-side routing (if needed in future)
+/*  /index.html  200

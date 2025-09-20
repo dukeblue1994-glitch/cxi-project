@@ -46,14 +46,15 @@
   status = 200
   force = true
 
+# SPA fallback - redirect all unmatched routes to index.html (except for files that exist)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  conditions = {Role = ["admin"]}
+  force = false
 
-# Handle 404 errors
+# Handle 404 errors for actual missing files
 [[redirects]]
-  from = "/*"
+  from = "/404"
   to = "/404.html"
-  status = 404
+  status = 200
