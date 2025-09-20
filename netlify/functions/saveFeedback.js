@@ -58,7 +58,12 @@ exports.handler = async function(event, context) {
 
   const token = process.env.GITHUB_TOKEN;
   const repo = process.env.REPO || process.env.GITHUB_REPO;
-  const branch = process.env.BRANCH || 'main';
+  // Use BRANCH, or GITHUB_BRANCH, or fallback to 'main' (default branch)
+  // Ensures non-empty value is chosen
+  const branch =
+    (process.env.BRANCH && process.env.BRANCH.trim()) ||
+    (process.env.GITHUB_BRANCH && process.env.GITHUB_BRANCH.trim()) ||
+    'main';
   const path = process.env.FEEDBACK_PATH || 'data/feedbacks.json';
 
   if (!token || !repo) {
