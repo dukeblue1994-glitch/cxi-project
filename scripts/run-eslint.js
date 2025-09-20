@@ -5,7 +5,7 @@ const { ESLint } = require("eslint");
   try {
     const eslint = new ESLint({ ignore: false });
 
-    // lintFiles accepts glob patterns; include JS files from src and netlify directories
+    // lintFiles accepts glob patterns; include JS files from src, netlify, and scripts directories
     const results = await eslint.lintFiles(["src/**/*.js", "netlify/**/*.js", "scripts/**/*.js"]);
     const formatter = await eslint.loadFormatter("stylish");
     const resultText = formatter.format(results);
