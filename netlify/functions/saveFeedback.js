@@ -1,4 +1,4 @@
-use strict;
+'use strict';
 // Netlify Function: saveFeedback
 // Accepts POST JSON payload and appends it to a JSON file in the repository using GitHub API.
 // Requires environment variables at deploy time:

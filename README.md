@@ -59,16 +59,58 @@ The CXI Project is a comprehensive feedback collection platform that:
 
 ### Deployment
 
-This project is designed to deploy on Netlify with zero configuration:
+This project is optimized for seamless deployment on Netlify:
 
-1. **Connect to Netlify**
-   - Fork this repository
-   - Connect your GitHub account to Netlify
-   - Add environment variables in Netlify dashboard
+#### Automatic Deployment (Recommended)
 
-2. **Automatic deployment**
-   - Netlify will automatically build and deploy from the main branch
-   - Functions will be available at `/.netlify/functions/`
+1. **Fork this repository** to your GitHub account
+
+2. **Connect to Netlify**
+   - Go to [Netlify Dashboard](https://app.netlify.com)
+   - Click "New site from Git"
+   - Connect your GitHub account and select your fork
+   - Netlify will automatically detect the configuration from `netlify.toml`
+
+3. **Set Environment Variables** in Netlify Dashboard (Site Settings → Environment Variables):
+   ```
+   GITHUB_TOKEN=your_github_personal_access_token
+   REPO=your-username/your-repo
+   BRANCH=main
+   FEEDBACK_PATH=data/feedbacks.json
+   ```
+
+4. **Generate GitHub Token**:
+   - Go to [GitHub Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens)
+   - Create a new token with `repo` scope (for private repos) or `public_repo` (for public repos)
+   - Copy the token and add it as `GITHUB_TOKEN` in Netlify
+
+#### Manual Deployment
+
+1. **Build locally**:
+   ```bash
+   npm install
+   npm run build
+   ```
+
+2. **Deploy to Netlify**:
+   - Drag and drop the project folder to Netlify Dashboard
+   - Or use Netlify CLI: `netlify deploy --prod`
+
+#### Environment Variables Reference
+
+| Variable | Required | Description | Example |
+|----------|----------|-------------|---------|
+| `GITHUB_TOKEN` | Yes | GitHub personal access token | `ghp_xxx...` |
+| `REPO` | Yes | Repository in format owner/name | `user/my-repo` |
+| `BRANCH` | No | Branch for data storage | `main` (default) |
+| `FEEDBACK_PATH` | No | Path to feedback JSON file | `data/feedbacks.json` (default) |
+
+#### Post-Deployment
+
+- Feedback form will be available at your Netlify domain
+- API endpoint: `https://your-site.netlify.app/api/feedback`
+- Functions will be available at `/.netlify/functions/`
+- Feedback data will be automatically committed to your repository
 
 ## Usage
 
