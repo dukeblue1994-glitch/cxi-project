@@ -19,6 +19,7 @@ function initAspects(){
     });
   }catch(e){ console.log("initAspects error", e); }
 }
+window.initAspects = initAspects;
 
 function exportFeedbacksCSV(){
   if(!window.FEEDBACKS || window.FEEDBACKS.length===0){ window.__UI && window.__UI.setFeedbackStatus && window.__UI.setFeedbackStatus("No feedback to export"); return; }

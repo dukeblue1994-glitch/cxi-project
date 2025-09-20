@@ -1,4 +1,4 @@
-const APP_PATH = '/Users/nickanderson/Library/Mobile Documents/com~apple~CloudDocs/Downloads/CXI_cxis_today_polished_v23/src/app.js';
+const APP_PATH = require.resolve('./app.js');
 
 describe('app.js basic behaviors', () => {
 	beforeEach(() => {
@@ -45,7 +45,12 @@ describe('app.js basic behaviors', () => {
 		}];
 
 		// mocks
-		const createObjectURLMock = jest.spyOn(URL, 'createObjectURL').mockImplementation(() => 'blob:fake');
+		// Mock URL.createObjectURL if it doesn't exist
+		if (!global.URL) global.URL = {};
+		if (!global.URL.createObjectURL) global.URL.createObjectURL = jest.fn(() => 'blob:fake');
+		if (!global.URL.revokeObjectURL) global.URL.revokeObjectURL = jest.fn();
+		
+		const createObjectURLMock = jest.spyOn(global.URL, 'createObjectURL').mockImplementation(() => 'blob:fake');
 		const appendSpy = jest.spyOn(document.body, 'appendChild');
 		// spy on click on anchor element
 		const clickMock = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
@@ -65,7 +70,9 @@ describe('app.js basic behaviors', () => {
 		expect(clickMock).toHaveBeenCalled();
 
 		// flush timeout for cleanup path if any
+		jest.useFakeTimers();
 		jest.runAllTimers();
+		jest.useRealTimers();
 	});
 
 	test('score validation blocks when well or better are < 15 words', () => {
