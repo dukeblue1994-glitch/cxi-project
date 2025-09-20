@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CXI Project - Customer Experience Intelligence</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-dark: #1e40af;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --good: #10b981;
+            --bad: #ef4444;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 24px;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .rating-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .chip-container {
+            margin-top: 8px;
+        }
+        
+        .chip {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 4px 8px 4px 0;
+            background: var(--border);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .chip:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        input[type="checkbox"] {
+            width: auto;
+        }
+        
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .kpi-section {
+            margin-top: 32px;
+            padding: 24px;
+            background: var(--bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .kpi-item {
+            text-align: center;
+        }
+        
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .kpi-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .explanation {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--surface);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .mt-8 {
+            margin-top: 8px;
+        }
+        
+        .export-btn {
+            background: var(--secondary);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        
+        .export-btn:hover {
+            background: #475569;
+        }
+        
+        .feedback-status {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .feedback-status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .feedback-status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CXI Project</h1>
+        <p class="subtitle">Customer Experience Intelligence - Share your feedback to help us improve</p>
+        
+        <form id="feedback-form">
+            <div class="form-group">
+                <label for="stage">Stage/Phase:</label>
+                <select id="stage">
+                    <option value="">Select stage...</option>
+                    <option value="discovery">Discovery</option>
+                    <option value="planning">Planning</option>
+                    <option value="implementation">Implementation</option>
+                    <option value="completion">Completion</option>
+                    <option value="follow-up">Follow-up</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="role">Your Role:</label>
+                <select id="role">
+                    <option value="">Select role...</option>
+                    <option value="client">Client</option>
+                    <option value="user">User</option>
+                    <option value="stakeholder">Stakeholder</option>
+                    <option value="team-member">Team Member</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="rating-group">
+                <div class="form-group">
+                    <label for="overall">Overall Experience (1-5):</label>
+                    <select id="overall">
+                        <option value="1">1 - Poor</option>
+                        <option value="2">2 - Fair</option>
+                        <option value="3" selected>3 - Good</option>
+                        <option value="4">4 - Very Good</option>
+                        <option value="5">5 - Excellent</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fairness">Fairness (1-5):</label>
+                    <select id="fairness">
+                        <option value="1">1 - Very Unfair</option>
+                        <option value="2">2 - Unfair</option>
+                        <option value="3" selected>3 - Fair</option>
+                        <option value="4">4 - Very Fair</option>
+                        <option value="5">5 - Extremely Fair</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="headline">Headline (brief summary):</label>
+                <input type="text" id="headline" placeholder="Brief summary of your experience..." maxlength="100">
+            </div>
+            
+            <div class="form-group">
+                <label for="well">What went well? (minimum 15 words):</label>
+                <textarea id="well" placeholder="Please describe what aspects of the experience went well..." required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="better">What could be better? (minimum 15 words):</label>
+                <textarea id="better" placeholder="Please describe what could be improved..." required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Relevant Aspects (select all that apply):</label>
+                <div id="aspects" class="chip-container">
+                    <!-- Aspect chips will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="conflict">Any conflicts or issues?</label>
+                <input type="text" id="conflict" placeholder="Optional: describe any conflicts or issues...">
+            </div>
+            
+            <div class="form-group">
+                <label for="resched">Rescheduling needs?</label>
+                <input type="text" id="resched" placeholder="Optional: any rescheduling requirements...">
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="consent" required>
+                    <label for="consent">I consent to providing this feedback for analysis and improvement purposes</label>
+                </div>
+            </div>
+            
+            <button type="button" class="submit-btn" onclick="score()">Submit Feedback</button>
+        </form>
+        
+        <div class="kpi-section">
+            <h3>Feedback Metrics</h3>
+            <div class="kpi-grid">
+                <div class="kpi-item">
+                    <div id="kpi-nss" class="kpi-value">--</div>
+                    <div class="kpi-label">Net Satisfaction Score</div>
+                </div>
+                <div class="kpi-item">
+                    <div id="kpi-index" class="kpi-value">--</div>
+                    <div class="kpi-label">Richness Index</div>
+                </div>
+            </div>
+            <div id="explain" class="explanation">
+                Complete the form above to see detailed analysis
+            </div>
+            <button type="button" class="export-btn" onclick="exportFeedbacksCSV()">Export Feedback Data</button>
+        </div>
+        
+        <div id="feedback-status" class="feedback-status" style="display: none;"></div>
+    </div>
+    
+    <!-- Load the application JavaScript -->
+    <script src="src/app.js"></script>
+</body>
+</html>
