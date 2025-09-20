@@ -1,7 +1,22 @@
-Test index.html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CXI Project - o</title>                         
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CXI Project — Test Index</title>
+  <style>
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial,Helvetica,sans-serif;margin:28px;background:#f7fbff;color:#071124}
+    a{color:#0369a1}
+    .note{color:#64748b}
+  </style>
+</head>
+<body>
+  <h1>CXI Project — Test Index</h1>
+  <p class="note">This page helps preview the project and run the automated harness.</p>
+  <ul>
+    <li><a href="index.html" target="_blank">Open index.html (app)</a></li>
+    <li><a href="test-harness.html" target="_blank">Open test harness (test-harness.html)</a></li>
+  </ul>
+  <p class="note">Run the harness by opening the test harness page and clicking "Run tests". For local testing run: <code>python -m http.server 8080</code> in the repo root and open <code>http://localhost:8080/test-harness.html</code>.</p>
+</body>
+</html>
