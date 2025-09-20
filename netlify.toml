@@ -2,15 +2,11 @@
   publish = "."
   functions = "netlify/functions"
 
-[dev]
-  functions = "netlify/functions"
+[build.environment]
+  NODE_VERSION = "22"
 
-[[headers]]
-  for = "/*"
-  [headers.values]
-  Access-Control-Allow-Origin = "*"
 [[redirects]]
-from = "/api/feedback"
-to = "/.netlify/functions/saveFeedback"
-status = 200
-force = true
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
