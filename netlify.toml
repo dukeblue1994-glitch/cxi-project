@@ -14,9 +14,3 @@ from = "/api/feedback"
 to = "/.netlify/functions/saveFeedback"
 status = 200
 force = true
-
-[[redirects]]
-from = "/api/token"
-to = "/.netlify/functions/fetchApiToken"
-status = 200
-force = true
