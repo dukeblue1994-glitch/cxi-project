@@ -45,7 +45,8 @@ exports.handler = async function(event) {
   const headers = {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Content-Type"
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS"
   };
 
   if (event.httpMethod === "OPTIONS") {
