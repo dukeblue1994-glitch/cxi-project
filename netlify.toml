@@ -1,10 +1,15 @@
 [build]
-  # No build command required for this repo: index.html is at the repository root
+  command = ""
   publish = "."
-  functions = "netlify/functions"
 
-[context.production]
-  command = ""   # no build step
+[build.environment]
+  NODE_VERSION = "20"
 
-[context.deploy-preview]
-  command = ""   # no build step
+# Single Page App fallback — serves index.html for all routes
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = true
+
+# Functions directory left blank because this project has no serverless functions
