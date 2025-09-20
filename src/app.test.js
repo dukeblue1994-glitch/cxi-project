@@ -1,76 +1,76 @@
-const APP_PATH = '/Users/nickanderson/Library/Mobile Documents/com~apple~CloudDocs/Downloads/CXI_cxis_today_polished_v23/src/app.js';
+const APP_PATH = "/Users/nickanderson/Library/Mobile Documents/com~apple~CloudDocs/Downloads/CXI_cxis_today_polished_v23/src/app.js";
 
-describe('app.js basic behaviors', () => {
-	beforeEach(() => {
-		// reset DOM and window state expected by app.js
-		document.body.innerHTML = '';
-		window.FEEDBACKS = [];
-		window.HEAT = { update: jest.fn() };
-		window.ASPECTS = ["Communication","Scheduling","Clarity","Respect","Conduct","Feedback"];
-		// clear any helpers/UI/storage used by app
-		window.__HELPERS = {};
-		window.__UI = {};
-		window.__STORAGE = {};
-		window.__RETRY = {};
-		jest.useRealTimers();
-	});
+describe("app.js basic behaviors", () => {
+  beforeEach(() => {
+    // reset DOM and window state expected by app.js
+    document.body.innerHTML = "";
+    window.FEEDBACKS = [];
+    window.HEAT = { update: jest.fn() };
+    window.ASPECTS = ["Communication","Scheduling","Clarity","Respect","Conduct","Feedback"];
+    // clear any helpers/UI/storage used by app
+    window.__HELPERS = {};
+    window.__UI = {};
+    window.__STORAGE = {};
+    window.__RETRY = {};
+    jest.useRealTimers();
+  });
 
-	afterEach(() => {
-		jest.restoreAllMocks();
-	});
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
-	test('initAspects creates a button chip for each aspect', () => {
-		document.body.innerHTML = '<div id="aspects"></div>';
-		// require app file to attach globals (safe to require multiple times in jest with module cache)
-		delete require.cache[require.resolve(APP_PATH)];
-		require(APP_PATH);
+  test("initAspects creates a button chip for each aspect", () => {
+    document.body.innerHTML = "<div id=\"aspects\"></div>";
+    // require app file to attach globals (safe to require multiple times in jest with module cache)
+    delete require.cache[require.resolve(APP_PATH)];
+    require(APP_PATH);
 
-		// call the exported initAspects
-		expect(typeof window.initAspects).toBe('function');
-		window.initAspects();
+    // call the exported initAspects
+    expect(typeof window.initAspects).toBe("function");
+    window.initAspects();
 
-		const wrap = document.getElementById('aspects');
-		expect(wrap).toBeTruthy();
-		const chips = wrap.querySelectorAll('.chip');
-		expect(chips.length).toBe(window.ASPECTS.length);
-		expect(chips[0].textContent).toBe(window.ASPECTS[0]);
-	});
+    const wrap = document.getElementById("aspects");
+    expect(wrap).toBeTruthy();
+    const chips = wrap.querySelectorAll(".chip");
+    expect(chips.length).toBe(window.ASPECTS.length);
+    expect(chips[0].textContent).toBe(window.ASPECTS[0]);
+  });
 
-	test('exportFeedbacksCSV creates a blob URL and clicks download anchor', () => {
-		// prepare a feedback so export runs
-		window.FEEDBACKS = [{
-			time: "now", stage: "s", role: "r", nss: 0, idx: 0, aspects: ["A"],
-			headline: "h", well: "w", better: "b", overall: 3, fairness: 3,
-			conflict: "", resched: "", consent: false, savedToServer: false, savedError: ""
-		}];
+  test("exportFeedbacksCSV creates a blob URL and clicks download anchor", () => {
+    // prepare a feedback so export runs
+    window.FEEDBACKS = [{
+      time: "now", stage: "s", role: "r", nss: 0, idx: 0, aspects: ["A"],
+      headline: "h", well: "w", better: "b", overall: 3, fairness: 3,
+      conflict: "", resched: "", consent: false, savedToServer: false, savedError: ""
+    }];
 
-		// mocks
-		const createObjectURLMock = jest.spyOn(URL, 'createObjectURL').mockImplementation(() => 'blob:fake');
-		const appendSpy = jest.spyOn(document.body, 'appendChild');
-		// spy on click on anchor element
-		const clickMock = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    // mocks
+    const createObjectURLMock = jest.spyOn(URL, "createObjectURL").mockImplementation(() => "blob:fake");
+    const appendSpy = jest.spyOn(document.body, "appendChild");
+    // spy on click on anchor element
+    const clickMock = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
 
-		delete require.cache[require.resolve(APP_PATH)];
-		require(APP_PATH);
+    delete require.cache[require.resolve(APP_PATH)];
+    require(APP_PATH);
 
-		// call export
-		window.exportFeedbacksCSV();
+    // call export
+    window.exportFeedbacksCSV();
 
-		expect(createObjectURLMock).toHaveBeenCalled();
-		// appended an anchor with download attribute set
-		const appended = appendSpy.mock.calls.find(call => call[0].tagName === 'A');
-		expect(appended).toBeTruthy();
-		const anchor = appended[0];
-		expect(anchor.download).toBe('cxi_feedbacks.csv');
-		expect(clickMock).toHaveBeenCalled();
+    expect(createObjectURLMock).toHaveBeenCalled();
+    // appended an anchor with download attribute set
+    const appended = appendSpy.mock.calls.find(call => call[0].tagName === "A");
+    expect(appended).toBeTruthy();
+    const anchor = appended[0];
+    expect(anchor.download).toBe("cxi_feedbacks.csv");
+    expect(clickMock).toHaveBeenCalled();
 
-		// flush timeout for cleanup path if any
-		jest.runAllTimers();
-	});
+    // flush timeout for cleanup path if any
+    jest.runAllTimers();
+  });
 
-	test('score validation blocks when well or better are < 15 words', () => {
-		// create required inputs
-		document.body.innerHTML = `
+  test("score validation blocks when well or better are < 15 words", () => {
+    // create required inputs
+    document.body.innerHTML = `
 			<input id="overall" value="5" />
 			<input id="fairness" value="4" />
 			<textarea id="well">one two three</textarea>
@@ -79,22 +79,22 @@ describe('app.js basic behaviors', () => {
 			<div id="aspects"></div>
 		`;
 
-		// load app and call score
-		delete require.cache[require.resolve(APP_PATH)];
-		require(APP_PATH);
+    // load app and call score
+    delete require.cache[require.resolve(APP_PATH)];
+    require(APP_PATH);
 
-		const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
+    const alertMock = jest.spyOn(window, "alert").mockImplementation(() => {});
 
-		const before = window.FEEDBACKS.length;
-		window.score();
-		expect(alertMock).toHaveBeenCalled();
-		expect(window.FEEDBACKS.length).toBe(before);
-	});
+    const before = window.FEEDBACKS.length;
+    window.score();
+    expect(alertMock).toHaveBeenCalled();
+    expect(window.FEEDBACKS.length).toBe(before);
+  });
 
-	test('score computes KPIs, pushes feedback and calls HEAT.update on success', () => {
-		// create required inputs with >=15 words for well and better
-		const longText = Array(20).fill('word').join(' ');
-		document.body.innerHTML = `
+  test("score computes KPIs, pushes feedback and calls HEAT.update on success", () => {
+    // create required inputs with >=15 words for well and better
+    const longText = Array(20).fill("word").join(" ");
+    document.body.innerHTML = `
 			<input id="overall" value="5" />
 			<input id="fairness" value="4" />
 			<textarea id="well">${longText}</textarea>
@@ -111,22 +111,22 @@ describe('app.js basic behaviors', () => {
 			<div id="explain"></div>
 		`;
 
-		// provide storage and retry mocks used by score
-		window.__STORAGE = { saveFeedbacks: jest.fn() };
-		window.__RETRY = { sendToServer: jest.fn() };
-		window.HEAT = { update: jest.fn() };
+    // provide storage and retry mocks used by score
+    window.__STORAGE = { saveFeedbacks: jest.fn() };
+    window.__RETRY = { sendToServer: jest.fn() };
+    window.HEAT = { update: jest.fn() };
 
-		delete require.cache[require.resolve(APP_PATH)];
-		require(APP_PATH);
+    delete require.cache[require.resolve(APP_PATH)];
+    require(APP_PATH);
 
-		const before = window.FEEDBACKS.length;
-		window.score();
-		expect(window.FEEDBACKS.length).toBe(before + 1);
-		expect(window.HEAT.update).toHaveBeenCalled();
-		// KPIs should be set
-		expect(document.getElementById('kpi-nss').textContent).not.toBe('');
-		expect(document.getElementById('kpi-index').textContent).not.toBe('');
-		// explain should contain aspect tags text
-		expect(document.getElementById('explain').innerHTML).toMatch(/Aspect tags/);
-	});
+    const before = window.FEEDBACKS.length;
+    window.score();
+    expect(window.FEEDBACKS.length).toBe(before + 1);
+    expect(window.HEAT.update).toHaveBeenCalled();
+    // KPIs should be set
+    expect(document.getElementById("kpi-nss").textContent).not.toBe("");
+    expect(document.getElementById("kpi-index").textContent).not.toBe("");
+    // explain should contain aspect tags text
+    expect(document.getElementById("explain").innerHTML).toMatch(/Aspect tags/);
+  });
 });
