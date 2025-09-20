@@ -59,16 +59,23 @@ The CXI Project is a comprehensive feedback collection platform that:
 
 ### Deployment
 
-This project is designed to deploy on Netlify with zero configuration:
+This project is designed to deploy on Netlify and is configured to work with the custom domain `cxis.today`:
 
-1. **Connect to Netlify**
+1. **Quick Setup**
    - Fork this repository
    - Connect your GitHub account to Netlify
-   - Add environment variables in Netlify dashboard
+   - Configure environment variables (see [DEPLOYMENT.md](DEPLOYMENT.md) for details)
 
 2. **Automatic deployment**
-   - Netlify will automatically build and deploy from the main branch
-   - Functions will be available at `/.netlify/functions/`
+   - Pushes to main branch trigger automatic deployment via GitHub Actions
+   - Netlify Functions handle feedback storage via GitHub API
+   - Site will be available at your configured custom domain
+
+3. **Custom Domain Configuration**
+   - See [DEPLOYMENT.md](DEPLOYMENT.md) for complete setup instructions
+   - Includes DNS configuration, Netlify dashboard setup, and environment variables
+
+For detailed deployment instructions, including environment variable configuration and custom domain setup, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Usage
 

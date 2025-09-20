@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CXI Project - Customer Experience Intelligence</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #6b7280;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --good: #16a34a;
+            --bad: #dc2626;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Inter, system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .aspects {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .chip {
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            background: var(--surface);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .chip:hover {
+            border-color: var(--primary);
+        }
+        
+        .chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .rating-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-block {
+            width: 100%;
+        }
+        
+        .kpi-section {
+            margin: 24px 0;
+            padding: 20px;
+            background: var(--bg);
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .kpi-item {
+            text-align: center;
+        }
+        
+        .kpi-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .kpi-label {
+            color: var(--text-muted);
+            font-size: 0.9em;
+        }
+        
+        #explain {
+            margin-top: 16px;
+            text-align: left;
+        }
+        
+        .mt-8 {
+            margin-top: 8px;
+        }
+        
+        .invite-section {
+            margin-top: 32px;
+            padding: 20px;
+            background: var(--bg);
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .invite-section.active {
+            display: block;
+        }
+        
+        .feedback-list {
+            margin-top: 32px;
+        }
+        
+        .feedback-item {
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        
+        @media (max-width: 640px) {
+            .rating-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CXI Feedback Collection</h1>
+        <p class="subtitle">Share your experience to help us improve</p>
+        
+        <form id="feedback-form">
+            <div class="form-group">
+                <label for="headline">Experience Headline</label>
+                <input type="text" id="headline" placeholder="Brief summary of your experience">
+            </div>
+            
+            <div class="rating-group">
+                <div class="form-group">
+                    <label for="overall">Overall Experience (1-5)</label>
+                    <select id="overall">
+                        <option value="1">1 - Poor</option>
+                        <option value="2">2 - Fair</option>
+                        <option value="3" selected>3 - Good</option>
+                        <option value="4">4 - Very Good</option>
+                        <option value="5">5 - Excellent</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fairness">Fairness (1-5)</label>
+                    <select id="fairness">
+                        <option value="1">1 - Very Unfair</option>
+                        <option value="2">2 - Unfair</option>
+                        <option value="3" selected>3 - Fair</option>
+                        <option value="4">4 - Very Fair</option>
+                        <option value="5">5 - Extremely Fair</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="well">What went well? (minimum 15 words)</label>
+                <textarea id="well" placeholder="Describe what aspects worked well for you..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="better">What could be better? (minimum 15 words)</label>
+                <textarea id="better" placeholder="Describe what could be improved..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Which aspects are you commenting on?</label>
+                <div id="aspects" class="aspects">
+                    <!-- Aspect chips will be dynamically generated here -->
+                </div>
+            </div>
+            
+            <div class="rating-group">
+                <div class="form-group">
+                    <label for="stage">Project Stage</label>
+                    <select id="stage">
+                        <option value="">Select stage</option>
+                        <option value="planning">Planning</option>
+                        <option value="implementation">Implementation</option>
+                        <option value="review">Review</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="role">Your Role</label>
+                    <select id="role">
+                        <option value="">Select role</option>
+                        <option value="user">User</option>
+                        <option value="stakeholder">Stakeholder</option>
+                        <option value="team-member">Team Member</option>
+                        <option value="manager">Manager</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="conflict">Any conflicts or issues?</label>
+                <textarea id="conflict" placeholder="Optional: Describe any conflicts or issues encountered..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="resched">Scheduling feedback</label>
+                <textarea id="resched" placeholder="Optional: Any feedback about scheduling or timing..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="consent" required>
+                    <label for="consent">I consent to providing this feedback for improvement purposes</label>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary btn-block" onclick="score()">Submit Feedback</button>
+            </div>
+        </form>
+        
+        <div class="kpi-section">
+            <div class="kpi-grid">
+                <div class="kpi-item">
+                    <div class="kpi-value" id="kpi-nss">--</div>
+                    <div class="kpi-label">Net Satisfaction Score</div>
+                </div>
+                <div class="kpi-item">
+                    <div class="kpi-value" id="kpi-index">--</div>
+                    <div class="kpi-label">Experience Index</div>
+                </div>
+            </div>
+            <div id="explain">
+                <!-- Explanation will be populated here -->
+            </div>
+        </div>
+        
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary" id="btn-leave" onclick="openInvite()">Invite Others</button>
+            <button type="button" class="btn btn-secondary" onclick="exportFeedbacksCSV()">Export Data</button>
+        </div>
+        
+        <div id="invite" class="invite-section">
+            <h3>Invite Others to Provide Feedback</h3>
+            <p>Share this link to collect more feedback:</p>
+            <div id="copy-live" style="background: #f3f4f6; padding: 12px; border-radius: 8px; font-family: monospace; margin: 16px 0;"></div>
+            <button type="button" class="btn btn-primary" onclick="copyInviteLink()">Copy Link</button>
+        </div>
+        
+        <div class="feedback-list">
+            <h3>Previous Feedback</h3>
+            <div id="feedbacks">
+                <!-- Previous feedback items will be listed here -->
+            </div>
+        </div>
+        
+        <!-- Simulation rate display for tests -->
+        <div id="sim-rate" style="display: none;"></div>
+    </div>
+
+    <!-- Load the application JavaScript -->
+    <script src="src/app.js"></script>
+    
+    <!-- Additional helper functions -->
+    <script>
+        // Helper functions for UI interactions
+        window.__HELPERS = {
+            $: (selector) => document.querySelector(selector),
+            clamp: (n, min, max) => Math.max(min, Math.min(max, n)),
+            wc: (text) => String(text || '').trim().split(/\s+/).filter(Boolean).length
+        };
+        
+        // UI helper functions
+        window.__UI = {
+            setFeedbackStatus: function(message, timeout = 3000) {
+                // Create or update status message
+                let statusEl = document.getElementById('feedback-status');
+                if (!statusEl) {
+                    statusEl = document.createElement('div');
+                    statusEl.id = 'feedback-status';
+                    statusEl.style.cssText = 'position: fixed; top: 20px; right: 20px; background: var(--primary); color: white; padding: 12px 20px; border-radius: 8px; z-index: 1000;';
+                    document.body.appendChild(statusEl);
+                }
+                statusEl.textContent = message;
+                statusEl.style.display = 'block';
+                
+                if (timeout > 0) {
+                    setTimeout(() => {
+                        statusEl.style.display = 'none';
+                    }, timeout);
+                }
+            },
+            
+            renderFeedbacks: function() {
+                const container = document.getElementById('feedbacks');
+                if (!container || !window.FEEDBACKS) return;
+                
+                container.innerHTML = '';
+                
+                if (window.FEEDBACKS.length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-muted);">No feedback submitted yet.</p>';
+                    return;
+                }
+                
+                window.FEEDBACKS.slice(-5).reverse().forEach((feedback, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'feedback-item';
+                    item.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <strong>${feedback.headline || 'Feedback'}</strong>
+                            <span style="color: var(--text-muted); font-size: 0.9em;">${feedback.time}</span>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em;">
+                                NSS: ${feedback.nss?.toFixed(2) || '--'}
+                            </span>
+                            <span style="background: var(--success); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin-left: 8px;">
+                                Index: ${feedback.idx?.toFixed(2) || '--'}
+                            </span>
+                        </div>
+                        <div style="color: var(--text-muted); font-size: 0.9em;">
+                            Aspects: ${feedback.aspects?.join(', ') || 'None'}
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            },
+            
+            wireUI: function() {
+                // Additional UI wiring if needed
+                console.log('UI wired successfully');
+            }
+        };
+        
+        // Storage helper
+        window.__STORAGE = {
+            saveFeedbacks: function() {
+                try {
+                    localStorage.setItem('cxi_feedbacks', JSON.stringify(window.FEEDBACKS || []));
+                } catch (e) {
+                    console.log('Storage save failed:', e);
+                }
+            },
+            
+            loadFeedbacks: function() {
+                try {
+                    const stored = localStorage.getItem('cxi_feedbacks');
+                    if (stored) {
+                        window.FEEDBACKS = JSON.parse(stored);
+                    }
+                } catch (e) {
+                    console.log('Storage load failed:', e);
+                    window.FEEDBACKS = [];
+                }
+            }
+        };
+        
+        // Retry helper for server communication
+        window.__RETRY = {
+            sendToServer: function(feedbackIndex) {
+                if (!window.FEEDBACKS || !window.FEEDBACKS[feedbackIndex]) return;
+                
+                const feedback = window.FEEDBACKS[feedbackIndex];
+                
+                fetch('/api/feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(feedback)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        feedback.savedToServer = true;
+                        window.__UI.setFeedbackStatus('Feedback saved successfully!');
+                    } else {
+                        throw new Error('Server response not ok');
+                    }
+                })
+                .catch(error => {
+                    console.log('Server save failed:', error);
+                    feedback.savedError = error.message;
+                    window.__UI.setFeedbackStatus('Feedback saved locally (server unavailable)', 5000);
+                });
+            },
+            
+            retryFeedback: function(index) {
+                this.sendToServer(index);
+            },
+            
+            pushAllUnsent: function() {
+                if (!window.FEEDBACKS) return;
+                
+                window.FEEDBACKS.forEach((feedback, index) => {
+                    if (!feedback.savedToServer && !feedback.savedError) {
+                        setTimeout(() => this.sendToServer(index), index * 1000);
+                    }
+                });
+            },
+            
+            backgroundRetryLoop: function() {
+                // Check every 30 seconds for unsent feedback
+                setInterval(() => {
+                    if (window.FEEDBACKS) {
+                        const unsent = window.FEEDBACKS.filter(f => !f.savedToServer && !f.savedError);
+                        if (unsent.length > 0) {
+                            console.log(`Retrying ${unsent.length} unsent feedback items`);
+                            this.pushAllUnsent();
+                        }
+                    }
+                }, 30000);
+            }
+        };
+        
+        // Invite functionality
+        function openInvite() {
+            const inviteSection = document.getElementById('invite');
+            const copyLive = document.getElementById('copy-live');
+            
+            if (inviteSection && copyLive) {
+                inviteSection.classList.add('active');
+                copyLive.textContent = window.location.href;
+            }
+        }
+        
+        function copyInviteLink() {
+            const copyLive = document.getElementById('copy-live');
+            if (copyLive && navigator.clipboard) {
+                navigator.clipboard.writeText(copyLive.textContent)
+                    .then(() => {
+                        window.__UI.setFeedbackStatus('Link copied to clipboard!');
+                    })
+                    .catch(() => {
+                        window.__UI.setFeedbackStatus('Failed to copy link');
+                    });
+            }
+        }
+        
+        // Simulation update for tests
+        function updateSim() {
+            const simRate = document.getElementById('sim-rate');
+            if (simRate) {
+                simRate.textContent = 'Simulation active';
+            }
+        }
+        
+        // Make functions globally available
+        window.openInvite = openInvite;
+        window.copyInviteLink = copyInviteLink;
+        window.updateSim = updateSim;
+    </script>
+</body>
+</html>
