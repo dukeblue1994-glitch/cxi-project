@@ -8,9 +8,19 @@
 [[headers]]
   for = "/*"
   [headers.values]
-  Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Headers = "Content-Type"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+
 [[redirects]]
-from = "/api/feedback"
-to = "/.netlify/functions/saveFeedback"
-status = 200
-force = true
+  from = "/api/feedback"
+  to = "/.netlify/functions/saveFeedback"
+  status = 200
+  force = true
+
+# Redirect all other requests to index.html for single-page app behavior
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"], Country = ["!"], Language = ["!"]}
