@@ -66,7 +66,7 @@ function score(){
   window.HEAT.update(stage, aspects, idx);
   if(idx >= 0.60){ const c = document.createElement("div"); c.style.position = "fixed"; c.style.inset = "0"; c.style.pointerEvents = "none"; c.innerHTML = "<canvas id=\"conf\" style=\"width:100%;height:100%\"></canvas>"; document.body.appendChild(c); setTimeout(()=>document.body.removeChild(c), 1200); }
   window.FEEDBACKS.push({ nss, idx, stage, role, aspects, headline, well, better, overall, fairness, conflict, resched, consent, time: new Date().toLocaleString() });
-  try{ window.__STORAGE.saveFeedbacks(); }catch{}
+  try{ window.__STORAGE && window.__STORAGE.saveFeedbacks && window.__STORAGE.saveFeedbacks(); }catch(e){ console.log("storage error", e); }
   window.__lastScore = { nss, idx, stage, role, aspects, headline };
   window.__UI && window.__UI.renderFeedbacks && window.__UI.renderFeedbacks();
   try{ const lastIdx = window.FEEDBACKS.length - 1; window.__RETRY && window.__RETRY.sendToServer && window.__RETRY.sendToServer(lastIdx); }catch(e){ console.log("server push error", e); }
@@ -74,30 +74,30 @@ function score(){
 window.score = score;
 
 document.addEventListener("DOMContentLoaded", ()=>{
-  try{ window.__STORAGE && window.__STORAGE.loadFeedbacks && window.__STORAGE.loadFeedbacks(); }catch{}
-  try{ window.__UI && window.__UI.renderFeedbacks && window.__UI.renderFeedbacks(); }catch{}
-  try{ initAspects(); }catch{}
-  try{ window.__UI && window.__UI.wireUI && window.__UI.wireUI(); }catch{}
-  try{ window.__RETRY && window.__RETRY.backgroundRetryLoop && window.__RETRY.backgroundRetryLoop(); }catch{}
-  try{ window.CXI_HELPERS = window.CXI_HELPERS || {}; window.CXI_HELPERS.sendToServer = window.__RETRY && window.__RETRY.sendToServer; window.CXI_HELPERS.retryFeedback = window.__RETRY && window.__RETRY.retryFeedback; window.CXI_HELPERS.pushAllUnsent = window.__RETRY && window.__RETRY.pushAllUnsent; }catch{}
+  try{ window.__STORAGE && window.__STORAGE.loadFeedbacks && window.__STORAGE.loadFeedbacks(); }catch(e){ console.log("load feedbacks error", e); }
+  try{ window.__UI && window.__UI.renderFeedbacks && window.__UI.renderFeedbacks(); }catch(e){ console.log("render feedbacks error", e); }
+  try{ initAspects(); }catch(e){ console.log("init aspects error", e); }
+  try{ window.__UI && window.__UI.wireUI && window.__UI.wireUI(); }catch(e){ console.log("wire UI error", e); }
+  try{ window.__RETRY && window.__RETRY.backgroundRetryLoop && window.__RETRY.backgroundRetryLoop(); }catch(e){ console.log("retry loop error", e); }
+  try{ window.CXI_HELPERS = window.CXI_HELPERS || {}; window.CXI_HELPERS.sendToServer = window.__RETRY && window.__RETRY.sendToServer; window.CXI_HELPERS.retryFeedback = window.__RETRY && window.__RETRY.retryFeedback; window.CXI_HELPERS.pushAllUnsent = window.__RETRY && window.__RETRY.pushAllUnsent; }catch(e){ console.log("CXI helpers error", e); }
 });
 
 // Pipeline hook: process fields via PIPELINE (if present) before calling score()
-;(function(){
+(function(){
   const originalScore = window.score;
   window.score = function(){
     const well = document.getElementById("well")?.value || "";
     const better = document.getElementById("better")?.value || "";
     const headline = (document.getElementById("headline")?.value || "").trim();
     try{
-      const pWell = window.PIPELINE ? PIPELINE.processResponse({text: well, meta: {field: "well"}}) : {redactedText: well};
-      const pBetter = window.PIPELINE ? PIPELINE.processResponse({text: better, meta: {field: "better"}}) : {redactedText: better};
-      const pHead = window.PIPELINE ? PIPELINE.processResponse({text: headline, meta: {field: "headline"}}) : {redactedText: headline};
+      const pWell = window.PIPELINE ? window.PIPELINE.processResponse({text: well, meta: {field: "well"}}) : {redactedText: well};
+      const pBetter = window.PIPELINE ? window.PIPELINE.processResponse({text: better, meta: {field: "better"}}) : {redactedText: better};
+      const pHead = window.PIPELINE ? window.PIPELINE.processResponse({text: headline, meta: {field: "headline"}}) : {redactedText: headline};
       if(pWell && pWell.redactedText !== undefined) document.getElementById("well").value = pWell.redactedText;
       if(pBetter && pBetter.redactedText !== undefined) document.getElementById("better").value = pBetter.redactedText;
       if(pHead && pHead.redactedText !== undefined) document.getElementById("headline").value = pHead.redactedText;
       originalScore && originalScore();
-      const q = window.PIPELINE ? PIPELINE.readQueue() : [];
+      const q = window.PIPELINE ? window.PIPELINE.readQueue() : [];
       if(q && q.length) window.__UI && window.__UI.setFeedbackStatus && window.__UI.setFeedbackStatus(`Some items queued for human review (${q.length}) — PII redacted.`, 8000);
     }catch(e){ console.log("pipeline hook error", e); originalScore && originalScore(); }
   };

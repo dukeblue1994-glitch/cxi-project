@@ -21,7 +21,7 @@ async function testESLintPatterns() {
     });
     
     // Verify no HTML files are included
-    const htmlFiles = results.filter(result => result.filePath.endsWith('.html'));
+    const htmlFiles = results.filter(result => result.filePath.endsWith(".html"));
     if (htmlFiles.length > 0) {
       console.error("\n❌ ERROR: HTML files are being linted:");
       htmlFiles.forEach(file => console.error(`  - ${file.filePath}`));
@@ -31,7 +31,7 @@ async function testESLintPatterns() {
     }
     
     // Verify only files from the correct directories are included
-    const allowedDirectories = ['src/', 'netlify/', 'scripts/'];
+    const allowedDirectories = ["src/", "netlify/", "scripts/"];
     const invalidFiles = results.filter(result => {
       const relativePath = path.relative(process.cwd(), result.filePath);
       return !allowedDirectories.some(dir => relativePath.startsWith(dir));
