@@ -1,7 +1,31 @@
+# Dependencies and builds
 node_modules/
-.DS_Store
-.env
 dist/
-data/feedbacks.json
-.vscode/
+build/
+coverage/
+out/
+.tmp/
+tmp/
+.cache/
+logs/
 *.log
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Netlify and functions
+.netlify/
+functions/node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Project data (existing)
+data/feedbacks.json
