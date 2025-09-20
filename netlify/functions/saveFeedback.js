@@ -1,4 +1,4 @@
-"use strict";
+use strict;
 // Netlify Function: saveFeedback
 // Accepts POST JSON payload and appends it to a JSON file in the repository using GitHub API.
 // Requires environment variables at deploy time:
@@ -77,9 +77,6 @@ exports.handler = async function(event, context) {
 
   const apiBase = `https://api.github.com/repos/${repo}/contents/${encodeURIComponent(path)}`;
   const ghHeaders = { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github.v3+json', 'User-Agent': 'cxi-netlify-fn' };
-
-  // helper for fetch
-  const doFetch = (url, opts) => fetch(url, opts);
 
   try {
     // 1) read existing file (if any)
