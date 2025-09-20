@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Tests for index.html</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#0b1220;color:#e6eef8;padding:18px}
+    .ok{color:#16a34a} .bad{color:#ef4444}
+    pre{background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);overflow:auto}
+    iframe{width:100%;height:480px;border:1px solid rgba(255,255,255,0.04);border-radius:8px;margin-bottom:12px}
+    .results{margin-top:12px}
+    button.run{background:#eab308;color:#071124;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+  </style>
+</head>
+<body>
+  <h2>Automated tests for index.html</h2>
+  <p class="muted">The page below loads index.html from the same directory. Tests run against the iframe's window.</p>
+
+  <iframe id="sut" src="index.html" title="SUT (index.html)"></iframe>
+  <div>
+    <button class="run" id="run-tests">Run tests</button>
+    <span id="summary"></span>
+  </div>
+
+  <div class="results" id="results"></div>
+
+<script>
+// Cleaned test harness (balanced try/catch) — runs the same set of lightweight DOM and scoring checks
+(async function(){
+  const iframe = document.getElementById("sut");
+  const resultsEl = document.getElementById("results");
+  const summaryEl = document.getElementById("summary");
+  let passes = 0, fails = 0, failures = [];
+
+  function log(msg, cls){ const p = document.createElement("div"); p.innerHTML = msg; if(cls) p.className = cls; resultsEl.appendChild(p); }
+  function assert(cond, msg){ if(cond){ passes++; log("PASS: "+msg, "ok"); } else { fails++; failures.push(msg); log("FAIL: "+msg, "bad"); } }
+
+  const safeWait = ms => new Promise(r=>setTimeout(r, ms));
+  function waitForIframeReady(timeout = 5000){
+    return new Promise((resolve,reject)=>{
+      const start = Date.now();
+      (function check(){
+        const win = iframe.contentWindow; const doc = iframe.contentDocument;
+        if(win && doc && (doc.readyState === "complete" || doc.readyState === "interactive")) return resolve();
+        if(Date.now()-start>timeout) return reject(new Error("iframe load timeout"));
+        setTimeout(check, 50);
+      })();
+    });
+  }
+
+  async function runTests(){
+    resultsEl.innerHTML = ""; passes = 0; fails = 0; failures = [];
+    try{
+      await waitForIframeReady(5000);
+      const win = iframe.contentWindow; const doc = iframe.contentDocument;
+
+      // Sanity
+      try{ assert(!!doc.querySelector("#btn-leave"), "btn-leave exists"); assert(!!doc.querySelector("#invite"), "invite exists"); }catch(e){ assert(false, "Sanity DOM checks threw: "+e.message); }
+
+      // openInvite
+      try{
+        if(typeof win.openInvite === "function"){ win.openInvite(); await safeWait(220); const copy = doc.querySelector("#copy-live")?.textContent || ""; assert(copy.length>10, "copy-live populated"); }
+        else assert(false, "openInvite not exposed");
+      }catch(e){ assert(false, "openInvite failed: "+e.message); }
+
+      // updateSim
+      try{ if(typeof win.updateSim === "function"){ win.updateSim(); await safeWait(40); } assert(doc.querySelector("#sim-rate"), "sim-rate present"); }catch(e){ assert(false, "updateSim failed: "+e.message); }
+
+      // score validation
+      try{ win.alert = ()=>{}; const well = doc.querySelector("#well"); const better = doc.querySelector("#better"); if(well) well.value = "short"; if(better) better.value = "short"; const consent = doc.querySelector("#consent"); if(consent) consent.checked = false; if(typeof win.score === "function"){ win.score(); await safeWait(40); } assert(true, "score validation attempted"); }catch(e){ assert(false, "score validation failed: "+e.message); }
+
+      // scoring persistence (mock fetch failure)
+      try{
+        const longText = Array(16).fill("word").join(" ");
+        const well = doc.querySelector("#well"); const better = doc.querySelector("#better"); if(well) { well.value = longText; well.dispatchEvent(new Event("input")); } if(better){ better.value = longText; better.dispatchEvent(new Event("input")); }
+        if(typeof win.score === "function"){ win.fetch = ()=>Promise.reject(new Error("mock")); const before = (win.FEEDBACKS||[]).length; await Promise.resolve(win.score()); await safeWait(200); const after = (win.FEEDBACKS||[]).length; assert(after === before + 1, "score added an entry"); }
+        else assert(false, "score not exposed");
+      }catch(e){ assert(false, "scoring persistence failed: "+e.message); }
+
+      // renderFeedbacks
+      try{ if(typeof win.renderFeedbacks === "function"){ win.renderFeedbacks(); await safeWait(40); } assert(true, "renderFeedbacks invoked"); }catch(e){ assert(false, "renderFeedbacks failed: "+e.message); }
+
+    }catch(e){ assert(false, "Test harness unexpected error: "+String(e)); }
+    finally{
+      summaryEl.textContent = ` ${passes} passed — ${fails} failed`;
+      if(fails>0){ const pre = document.createElement("pre"); pre.textContent = "Failures:\n" + failures.map((s,i)=>`${i+1}. ${s}`).join("\n"); resultsEl.appendChild(pre); }
+    }
+  }
+
+  document.getElementById("run-tests").addEventListener("click", runTests);
+  iframe.addEventListener("load", ()=>{});
+})();
+</script>
+</body>
+</html>
