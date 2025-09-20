@@ -52,7 +52,7 @@ The CXI Project is a comprehensive feedback collection platform that:
    FEEDBACK_PATH=data/feedbacks.json
    ```
 
-4. **Run linting** (optional)
+4. **Run linting** (optional - note: current codebase has linting issues that can be fixed)
    ```bash
    npm run lint
    ```
