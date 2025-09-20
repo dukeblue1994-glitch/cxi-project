@@ -479,8 +479,11 @@
         // Enhanced score function that shows results
         const originalScore = window.score;
         window.score = function() {
-            if (originalScore) {
+            if (typeof originalScore === 'function') {
                 originalScore();
+                showKPISection();
+            } else {
+                console.warn('window.score is not defined. Showing KPI section as fallback.');
                 showKPISection();
             }
         };
